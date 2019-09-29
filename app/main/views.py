@@ -2,7 +2,7 @@ from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..models import Writer,Comment,Post
 from .forms import UpdateProfile,PostForm,CommentForm
-from flask_login import login_required,current_writer
+from flask_login import login_required,current_user
 from .. import db,photos
 import markdown2 
 import datetime
@@ -13,10 +13,12 @@ def index():
    '''
    View root page function that returns the index page and its data
    '''
+
+   posts = Post.query.all()
  
    title = 'Home - Welcome to blog_posts website'
 
-   return render_template('index.html', title = title)
+   return render_template('index.html', title = title , posts=posts)
 
 
 
@@ -60,73 +62,64 @@ def update_pic(uname):
         db.session.commit()
         return redirect(url_for('main.profile',uname=uname))
 
-
+# CREATE POST
 @main.route('/post/new', methods = ['GET','POST'])
 @login_required
 def new_post():
     post_form = PostForm()
     
     if post_form.validate_on_submit():
-        title = post_form.title.data
-        post = post_form.text.data
-        
-      
-        #post instance
-        new_post = Post(post_title=title,post_content=post,writer=current_writer)
-        #save post
-        print(new_post.post_title)
-        new_post.save_post()
+        post = Post(title = post_form.title.data, content = post_form.content.data , writer=current_user)
+
+        db.session.add(post)
+        db.session.commit()
+
         return redirect(url_for('.index'))
 
     title = 'New post'
-    return render_template('new_post.html',title = title,post_form = post_form)
-
-@main.route('posts')
-
-def posts():
-    posts = Post.get_posts()
-    
-    return render_template("posts.html", posts = posts)
+    return render_template('new_post.html',title = title,post_form = post_form, legend = 'New Post')
 
 
-@main.route('/pitch/<int:id>', methods = ['GET','POST'])
-def pitch(id):
-    pitch = Pitch.get_pitch(id)
+@main.route('/post/<int:post_id>', methods = ['GET','POST'])
+def post(post_id):
+    post = Post.query.get(post_id)
 
-    if request.args.get("upvote"):
-        pitch.upvotes = pitch.upvotes + 1
+    return render_template('post.html',title=post.title,post=post)
 
-        db.session.add(pitch)
+#    UPDATE POST
+@main.route('/post/<int:post_id>/update', methods = ['GET','POST'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get(post_id)
+    if post.author != current_writer:
+        abort(404)
+
+    post_form = PostForm()
+    if post_form.validate_on_submit():
+        post.title = post_form.title.data
+        post.content = post_form.content.data 
+
+        # db.session.add()
         db.session.commit()
 
-        return redirect("/pitch/{pitch_id}".format(pitch_id=pitch.id))
-
-    elif request.args.get("downvote"):
-        pitch.downvotes = pitch.downvotes + 1
-
-        db.session.add(pitch)
-        db.session.commit()
-
-        return redirect("/pitch/{pitch_id}".format(pitch_id=pitch.id))
-
-    comment_form =  CommentForm()
-    if comment_form.validate_on_submit():
-        comment = comment_form.text.data
-
-        new_comment = Comment(comment = comment,user = current_user,pitch_id=pitch)
-        new_comment.save_comment()
-
-    comments = Comment.get_comments(pitch)
-    return render_template("pitch.html", pitch = pitch, comment_form = comment_form, comments = comments)
-
-@main.route('/user/<uname>/pitches')
-def user_pitches(uname):
-    user = User.query.filter_by(username=uname).first()
-    pitches = Pitch.query.filter_by(user_id=user.id).all()
-    pitches_count = Pitch.count_pitches(uname)
-
-
-    return render_template("profile/pitches.html", user=user,pitches=pitches,pitches_count=pitches_count)   
+        return redirect(url_for('post',post_id = post.id))
+    elif request.method == 'GET':
+        post_form.title.data =  post.title 
+        post_form.content.data = post.content
     
+    return render_template('new_post.html',title = 'Update Post',post_form = post_form,legend = 'Update Post')
+
+  
+@main.route('/post/<int:post_id>/delete', methods = ['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get(post_id)
+    if post.author != current_writer:
+        abort(404)
+    db.session.delete(post)
+    db.session.commit()
+    
+    return redirect(url_for('.index'))
+
 
 

@@ -1,0 +1,23 @@
+<html>
+
+<body >
+  <div class="container" style="margin: 55px 25px; background-color:antiquewhite; margin:auto; margin-top:60px" >
+
+  {% extends 'bootstrap/base.html'%}
+
+  <!-- Navbar block  -->
+  {% block navbar %}
+  {% include 'navbar.html' %}
+  {% endblock %}
+
+  {%block styles %}
+  {{super()}}
+  <!--Importing the simple mde css and js files  -->
+  {{ simplemde.css}}
+  {{ simplemde.js }}
+
+  {% endblock %}
+</div>
+</body>
+
+</html>
