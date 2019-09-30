@@ -8,15 +8,8 @@ from . import login_manager
 def load_writer(writer_id):
     return Writer.query.get(int(writer_id))
 
-# class User(UserMixin,db.Model):
-#     __tablename__ = 'users'
-#     id = db.Column(db.Integer,primary_key = True)
-#     email = db.Column(db.String(255),unique = True,index = True)
-#     posts = db.relationship('Post',backref = 'user',lazy = "dynamic")
-#     comments = db.relationship('Comment',backref = 'user',lazy="dynamic") 
-
 class Writer(UserMixin,db.Model):
-    __tablename__ = 'writters'
+    __tablename__ = 'writers'
     id = db.Column(db.Integer,primary_key = True)
     username = db.Column(db.String(255),index = True)
     email = db.Column(db.String(255),unique = True,index = True)
@@ -47,7 +40,6 @@ class Post(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     post_title = db.Column(db.String)
     post_content = db.Column(db.String(255))
-    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
     writer_id = db.Column(db.Integer,db.ForeignKey("writers.id"))
     comments = db.relationship('Comment',backref = 'post_id',lazy = "dynamic")
    
@@ -56,10 +48,11 @@ class Post(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    # @classmethod
-    # def get_s(cls,category):
-    #     pitches = Pitch.query.filter_by(category=category).all()
-    #     return pitches
+    @classmethod
+    def get_posts(cls,id):
+        posts = Post.query.filter_by(id=id).all()
+        return posts
+
 
     @classmethod
     def get_post(cls,id):
@@ -80,7 +73,6 @@ class Comment(db.Model):
     __tablename__='comments'
     id = db.Column(db.Integer,primary_key = True)
     comment = db.Column(db.String(255))
-    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
     writer_id = db.Column(db.Integer,db.ForeignKey("writers.id"))
     post = db.Column(db.Integer,db.ForeignKey("posts.id"))
 

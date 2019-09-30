@@ -14,7 +14,7 @@ def login():
     if login_form.validate_on_submit():
         writer = Writer.query.filter_by(email = login_form.email.data).first()
         if writer is not None and writer.verify_password(login_form.password.data):
-            login_writer(writer,login_form.remember.data)
+            login_user(writer,login_form.remember.data)
             return redirect(request.args.get('next') or url_for('main.index'))
 
         flash('Invalid username or Password')

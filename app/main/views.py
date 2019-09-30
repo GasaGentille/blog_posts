@@ -25,7 +25,7 @@ def index():
 @main.route('/writer/<uname>') 
 def profile(uname):
     writer = Writer.query.filter_by(username = uname).first()
-    pitches_count = Pitch.count_pitches(uname)
+    posts_count = Post.count_posts(uname)
 
     if writer is None:
         abort(404)
