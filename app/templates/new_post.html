@@ -1,26 +1,10 @@
 {% extends 'base.html'%}
+{% import 'bootstrap/wtf.html' as wtf%}
+
 {% block content %}
 
 <div class="container">
-    <form>
-
-        <h1> New post</h2>
-        <legend class=" border-bottom mb-4"> {{legend}}</legend>
-
-        <div class="form-group">
-           <label> {{post_form.title.label(class="form-control-label")}} </label>
-            <input type="text" class="form-control" aria-describedby="emailHelp">
-        </div>
-        <div class="form-group">
-            <label>  {{post_form.content.label(class="form-control-label")}}</label>
-            <textarea type="text" class="form-control"></textarea>
-
-        </div>
-        <div class="form-group">
-            {{post_form.submit}}
-        </div>
-
-    </form>
+     {{wtf.quick_form(post_form)}}
 </div>
 
 {% endblock%}

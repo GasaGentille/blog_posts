@@ -68,17 +68,20 @@ def update_pic(uname):
 def new_post():
     post_form = PostForm()
     posts = Post.query.all()
+    print(post_form.validate_on_submit())
     
     if post_form.validate_on_submit():
-        post = Post(title = post_form.title.data, content = post_form.content.data , writer=current_user)
+       
+
+        post = Post(post_title = post_form.title.data, post_content = post_form.content.data , writer_id=current_user.id)
 
         db.session.add(post)
         db.session.commit()
 
-        return redirect(url_for('index.html'))
+        return redirect(url_for('main.index'))
 
     title = 'New post'
-    return render_template('new_post.html',title = title,post_form = post_form, legend = 'New Post',posts=posts)
+    return render_template('new_post.html', post_form = post_form, writer=current_user)
 
 
 @main.route('/post/<int:post_id>', methods = ['GET','POST'])
@@ -108,7 +111,7 @@ def update_post(post_id):
         post_form.title.data =  post.title 
         post_form.content.data = post.content
     
-    return render_template('new_post.html',title = 'Update Post',post_form = post_form,legend = 'Update Post')
+    return render_template('new_post.html',title = 'Update Post',post_form = PostForm,legend = 'Update Post')
 
   
 @main.route('/post/<int:post_id>/delete', methods = ['POST'])

@@ -4,7 +4,7 @@
     <div class="col-xs-12 col-sm-4 col-md-2 col-lg-2 pitch-card">
        <h4>{{post.post_title}}</h4>
        <p>{{post.post_content| truncate(100)}}</p>
-       <p>Pitch by:{{post.user.username}}<a href="/post/{{post.id}}" class="btn btn-primary ">comments</a></p>
+       <p>Pitch by:{{post.writer.username}}<a href="/post/{{post.id}}" class="btn btn-primary ">comments</a></p>
     </div>
 
     {% endfor %}
