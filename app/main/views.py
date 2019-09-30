@@ -67,6 +67,7 @@ def update_pic(uname):
 @login_required
 def new_post():
     post_form = PostForm()
+    posts = Post.query.all()
     
     if post_form.validate_on_submit():
         post = Post(title = post_form.title.data, content = post_form.content.data , writer=current_user)
@@ -74,10 +75,10 @@ def new_post():
         db.session.add(post)
         db.session.commit()
 
-        return redirect(url_for('.index'))
+        return redirect(url_for('index.html'))
 
     title = 'New post'
-    return render_template('new_post.html',title = title,post_form = post_form, legend = 'New Post')
+    return render_template('new_post.html',title = title,post_form = post_form, legend = 'New Post',posts=posts)
 
 
 @main.route('/post/<int:post_id>', methods = ['GET','POST'])

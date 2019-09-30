@@ -1,0 +1,60 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- displaying  Username-->
+
+        <h3> {{writer.username| capitalize}} </h3>
+        <hr>
+
+        <!--Displaying user bio-->
+        {% if writer.bio %}
+        <p> {{writer.bio}}</p>
+        {%else%}
+        <p> {{writer.username| capitalize}} has no bio </p>
+        {% endif %}
+
+
+        <!--Display profile photo-->
+        <div class="col-md-3">
+            {% if writer.profile_pic_path %}
+
+            <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt="" class="img-thumbnail">
+
+            {%else%}
+            <p>No profile picture</p>
+
+            {% endif %}
+
+            {% if writer == current_user %}
+            <form action="{{url_for('main.update_pic',uname=writer.username)}}" method="post" enctype="multipart/form-data">
+
+                <input type="file" name="photo" class="form-control" required>
+                <input type="submit">
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-9">
+        <p>Number of posts:{{posts}}</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12" style="margin:60px; padding-top:0px;">
+        <h3>Tell us about you.</h3>
+        <!-- Displaying user bio -->
+        {% if writer.bio %}
+        <p>{{writer.bio}}</p>
+        {%else%}
+        <p>{{writer.username|capitalize}}has no bio</p>
+        {% endif %}
+      
+        {% if writer == current_user %}
+        <a href="{{url_for('main.update_profile',uname=writer.username)}}">Edit profile</a>
+        {% endif %}
+
+    </div>
+</div>
+</div>
+{% endblock %}
