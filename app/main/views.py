@@ -96,39 +96,40 @@ def post(post_id):
 @login_required
 def update_post(post_id):
     post = Post.query.get(post_id)
-    if post.author != current_writer:
+    if post is None:
         abort(404)
 
     post_form = PostForm()
     if post_form.validate_on_submit():
-        post.title = post_form.title.data
-        post.content = post_form.content.data 
+        post.post_title = post_form.title.data
+        post.post_content = post_form.content.data 
 
-        # db.session.add()
+        db.session.add(post)
         db.session.commit()
 
-        return redirect(url_for('post',post_id = post.id))
-    elif request.method == 'GET':
-        post_form.title.data =  post.title 
-        post_form.content.data = post.content
-
         return redirect(url_for('.index'))
+   
     
-    return render_template('new_post.html',title = 'Update Post',post_form = PostForm,post_id=post_id)
+    return render_template('new_post.html',title = 'Update Post',post_form = post_form)
 
   
-@main.route('/post/<int:post_id>/delete', methods = ['POST'])
+@main.route('/post/<int:post_id>/delete', methods = ['GET','POST'])
 @login_required
 def delete_post(post_id):
     post = Post.query.get(post_id)
-    if post.author != current_writer:
-        abort(404)
+    post_form = PostForm()
+    # if post.author != current_writer:
+    #     abort(404)
+    if post_form.validate_on_submit():
+        post.title = post_form.title.data
+        post.content = post_form.content.data 
+
     db.session.delete(post)
     db.session.commit()
     
     return redirect(url_for('.index'))
 
-    return render_template('new_post.html',title = 'Update Post',post_form = PostForm, post_id = post_id)
+    # return render_template('new_post.html',title = 'Update Post',post_form = PostForm)
 
 
 
