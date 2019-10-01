@@ -5,7 +5,7 @@ from .forms import UpdateProfile,PostForm,CommentForm
 from flask_login import login_required,current_user
 from .. import db,photos
 import markdown2 
-import datetime
+# from ..request import get_quotes
 
 
 @main.route('/')
@@ -13,6 +13,7 @@ def index():
    '''
    View root page function that returns the index page and its data
    '''
+#    quote = get_quotes()
 
    posts = Post.query.all()
  
@@ -69,6 +70,7 @@ def new_post():
     post_form = PostForm()
     posts = Post.query.all()
     writer = Writer.query.filter_by(id=current_user.id).first()
+    # comment = Comment.query.filter_by(post_id = id).first()
     print(post_form.validate_on_submit())
     
     if post_form.validate_on_submit():
@@ -118,8 +120,7 @@ def update_post(post_id):
 def delete_post(post_id):
     post = Post.query.get(post_id)
     post_form = PostForm()
-    # if post.author != current_writer:
-    #     abort(404)
+  
     if post_form.validate_on_submit():
         post.title = post_form.title.data
         post.content = post_form.content.data 
@@ -129,7 +130,7 @@ def delete_post(post_id):
     
     return redirect(url_for('.index'))
 
-    # return render_template('new_post.html',title = 'Update Post',post_form = PostForm)
+    
 
 
 

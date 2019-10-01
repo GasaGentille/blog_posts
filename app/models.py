@@ -85,3 +85,11 @@ class Comment(db.Model):
         comments = Comment.query.filter_by(post_id=post).all()
         return comments
 
+# class Quotes(db.Model):
+
+#     def __init__(self,author,quote):
+#         self.author = author
+#         self.quote = quote
+
+  
+
