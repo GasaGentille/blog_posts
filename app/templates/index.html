@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% import 'macros.html' as macro%}
 
 
 {% block styles %}
@@ -11,18 +10,19 @@
 {% block content %}
 
 
-<article class="media content-section">
-    <div class="media-body">
-        <div class="article-metadata">
-            <a href="{{url_for('main.new_post')}}"> Posts
 
-            </a>
-        </div>
-        {% for post in posts %}
-
-        <h2>{{post.title}}</a></h2>
-        <p>{{post.content}}</p>
+<div class="container">
+    <div>
+        <a href="{{url_for('main.new_post')}}"> CREATE POST</a>
     </div>
-</article>
-{% endfor %}
+    {% for post in posts %}
+
+    <h2>{{post.post_title}}</a></h2>
+    <p>{{post.post_content}}</p>
+    <p>{{post.id}}</p>
+    {% endfor %}
+
+</div>
+
+
 {% endblock %}

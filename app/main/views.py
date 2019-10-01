@@ -68,6 +68,7 @@ def update_pic(uname):
 def new_post():
     post_form = PostForm()
     posts = Post.query.all()
+    writer = Writer.query.filter_by(id=current_user.id).first()
     print(post_form.validate_on_submit())
     
     if post_form.validate_on_submit():
@@ -78,10 +79,10 @@ def new_post():
         db.session.add(post)
         db.session.commit()
 
-        return redirect(url_for('main.index'))
+        return redirect(url_for('.index'))
 
     title = 'New post'
-    return render_template('new_post.html', post_form = post_form, writer=current_user)
+    return render_template('new_post.html', post_form = post_form, writer=writer)
 
 
 @main.route('/post/<int:post_id>', methods = ['GET','POST'])
@@ -110,8 +111,10 @@ def update_post(post_id):
     elif request.method == 'GET':
         post_form.title.data =  post.title 
         post_form.content.data = post.content
+
+        return redirect(url_for('.index'))
     
-    return render_template('new_post.html',title = 'Update Post',post_form = PostForm,legend = 'Update Post')
+    return render_template('new_post.html',title = 'Update Post',post_form = PostForm,post_id=post_id)
 
   
 @main.route('/post/<int:post_id>/delete', methods = ['POST'])
@@ -124,6 +127,8 @@ def delete_post(post_id):
     db.session.commit()
     
     return redirect(url_for('.index'))
+
+    return render_template('new_post.html',title = 'Update Post',post_form = PostForm, post_id = post_id)
 
 
 
