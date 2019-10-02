@@ -1,7 +1,7 @@
 from flask import render_template,request,redirect,url_for,abort
 from . import main
-from ..models import Writer,Comment,Post,Quotes
-from .forms import UpdateProfile,PostForm,CommentForm
+from ..models import Writer,Comment,Post,Quotes,Comment,Subscription
+from .forms import UpdateProfile,PostForm,CommentForm,SubscriptionForm
 from flask_login import login_required,current_user
 from .. import db,photos
 import markdown2 
@@ -18,6 +18,17 @@ def index():
    posts = Post.query.all()
 
    title = 'Home - Welcome to blog_posts website'
+   form = SubscriptionForm()
+   if form.validate_on_submit():
+       name = form.name.data
+       email = form.email.data
+
+       subscriber = Subscription(name=name,email=email)
+       db.session.add(subscriber)
+       db.session.commit()
+
+       return redirect(url_for('.index'))
+       mail_message("Welcome to blog posts","subscriber/subscriber_user",subscriber.email,subscriber = subscriber)
 
    return render_template('index.html', title = title , posts=posts,quote=quote)
 
@@ -70,7 +81,7 @@ def new_post():
     post_form = PostForm()
     posts = Post.query.all()
     writer = Writer.query.filter_by(id=current_user.id).first()
-    comments = Comment.query.filter_by(post_id = id).first()
+    # comments = Comment.query.filter_by(post_id = id).first()
     print(post_form.validate_on_submit())
     
     if post_form.validate_on_submit():
@@ -103,9 +114,9 @@ def update_post(post_id):
 
     post_form = PostForm()
     if post_form.validate_on_submit():
-        post.post_title = post_form.title.data
-        post.post_content = post_form.content.data 
-
+        # post.post_title = post_form.title.data
+        # post.post_content = post_form.content.data 
+        Post.query.filter_by(id=post_id).update({"post_title": post_form.title.data, "post_content": post_form.content.data})
         db.session.add(post)
         db.session.commit()
 
@@ -129,33 +140,37 @@ def delete_post(post_id):
     db.session.commit()
     
     return redirect(url_for('.index'))
-@main.route("/comment/<int:id>/create", methods=['GET,POST'])
-def create_comment(id):
+@main.route("/comment/<int:post_id>/create",methods = ['GET','POST'])
+def comment(post_id):
     form = CommentForm()
-    comment = Comment.query.filter_by(post_id).all()
-    post = Post.query.filter_by(id=id).first()
+    comments = Comment.query.filter_by(post_id=post_id).all()
+    posts = Post.query.get(post_id)
 
     title=f'Write a comment'
 
     if form.validate_on_submit():
         comment = form.comment.data
+        post_id = post_id
 
-        new_comment = Comment(comment = comment,writer = current_user,post=post, post_id = id)
+        new_comment = Comment(comment = comment,post_id = post_id)
         new_comment.save_comment()
         
         return redirect(url_for('.index'))
-    return render_template("comment.html", post = post, comment = comment,comment_form= form)
+    return render_template("comment.html", posts = posts, comments = comments, form= form)
 
-@main.route("/comment/<int:id>/delete", methods=['GET,POST'])
+@main.route("/index/<int:id>/delete_comment")
 @login_required
 def delete_comment(id):
-    comment = Comment.query.filter_by(id=id).first()
-    if comment is None:
+    available_post = Comment.query.filter_by(id=id).first()
+    print(available_post)
+    if available_post is None:
         abort(404)
-    db.session.delete(comment)
+    db.session.delete(available_post)
     db.session.commit()
 
     return redirect(url_for('.index'))
+    # return render_template('comment.html')
+
 
 
 

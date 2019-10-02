@@ -3,6 +3,7 @@ from . import db
 from flask_login import UserMixin,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from . import login_manager
+datetime.utcnow
 
 @login_manager.user_loader
 def load_writer(writer_id):
@@ -52,6 +53,18 @@ class Post(db.Model):
         posts = Post.query.filter_by(id=id).all()
         return posts
 
+    def delete (self,id):
+        comments = Comment.query.filter_by(id=id).all()
+        for comment in comments:
+            db.session.delete(comment)
+            db.session.commit()
+
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(sel):
+        return f'Post {self.content}'
+
 
     @classmethod
     def get_post(cls,id):
@@ -71,24 +84,45 @@ class Post(db.Model):
 class Comment(db.Model):
     __tablename__='comments'
     id = db.Column(db.Integer,primary_key = True)
-    comment = db.Column(db.String(255))
+    comment = db.Column(db.Text())
     writer_id = db.Column(db.Integer,db.ForeignKey("writers.id"))
     post_id= db.Column(db.Integer,db.ForeignKey("posts.id"))
 
     def save_comment(self):
         db.session.add(self)
         db.session.commit()
+
+    @classmethod
+    def clear_comment(self):
+        Comment.comments.clear()
         
     @classmethod
-    def get_comments(cls,post):
+    def get_comments(cls,id):
         comments = Comment.query.filter_by(post_id=id).all()
         return comments
+
+    @classmethod
+    def delete_comment(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f'Comment{self.comment}'
 
 class Quotes:
 
     def __init__(self,author,quote):
         self.author = author
         self.quote = quote
+
+class Subscription(db.Model):
+    __tablename__="subscribers"
+    id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String(255))
+    email = db.Column(db.String(255))
+
+    def __repr__(self):
+        return f'Subscription{self.name}'
 
   
 

@@ -1,0 +1,3 @@
+Hello {{writter.name}}
+Welcome to blog_posts website
+We have just seen you have subscribed for our application and want to welcome you to the family.Enjoy!
