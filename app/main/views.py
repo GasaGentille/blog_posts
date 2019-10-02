@@ -14,8 +14,9 @@ def index():
    View root page function that returns the index page and its data
    '''
    quote = get_quotes()
-
+#    comments = Comment.get_comments(id)
    posts = Post.query.all()
+
    title = 'Home - Welcome to blog_posts website'
 
    return render_template('index.html', title = title , posts=posts,quote=quote)
@@ -69,6 +70,7 @@ def new_post():
     post_form = PostForm()
     posts = Post.query.all()
     writer = Writer.query.filter_by(id=current_user.id).first()
+    comments = Comment.query.filter_by(post_id = id).first()
     print(post_form.validate_on_submit())
     
     if post_form.validate_on_submit():
@@ -127,18 +129,33 @@ def delete_post(post_id):
     db.session.commit()
     
     return redirect(url_for('.index'))
-
-def create_comments(id):
+@main.route("/comment/<int:id>/create", methods=['GET,POST'])
+def create_comment(id):
     form = CommentForm()
+    comment = Comment.query.filter_by(post_id).all()
     post = Post.query.filter_by(id=id).first()
+
+    title=f'Write a comment'
+
     if form.validate_on_submit():
         comment = form.comment.data
 
-        new_comment = Comment(comment = comment,user = current_user,post=post)
+        new_comment = Comment(comment = comment,writer = current_user,post=post, post_id = id)
         new_comment.save_comment()
+        
+        return redirect(url_for('.index'))
+    return render_template("comment.html", post = post, comment = comment,comment_form= form)
 
-    comments = Comment.get_comments(pitch)
-    return render_template("pitch.html", post = post, comments = comments)
+@main.route("/comment/<int:id>/delete", methods=['GET,POST'])
+@login_required
+def delete_comment(id):
+    comment = Comment.query.filter_by(id=id).first()
+    if comment is None:
+        abort(404)
+    db.session.delete(comment)
+    db.session.commit()
+
+    return redirect(url_for('.index'))
 
 
 

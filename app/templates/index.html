@@ -31,9 +31,17 @@
 
     <h2>{{post.post_title}}</a></h2>
     <p>{{post.post_content}}</p>
+    
+    {% for comment in comments %}
+    <a href="{{url_for('main.create_comment', id = comment.id)}}"> Add comment</a>
+    <a href="{{url_for('main.delete_post',id = comment.id)}}"> Delete comment</a>
     {% endfor %}
 
+    {% endfor %}
+
+
 </div>
+
 
 
 {% endblock %}

@@ -1,6 +1,6 @@
 from datetime import datetime
 from . import db
-from flask_login import UserMixin
+from flask_login import UserMixin,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from . import login_manager
 
@@ -40,7 +40,7 @@ class Post(db.Model):
     post_title = db.Column(db.String)
     post_content = db.Column(db.String(255))
     writer_id = db.Column(db.Integer,db.ForeignKey("writers.id"))
-    comments = db.relationship('Comment',backref = 'post_id',lazy = "dynamic")
+    comments = db.relationship('Comment',backref = 'posts',lazy = "dynamic")
    
 
     def save_post(self):
@@ -73,7 +73,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     comment = db.Column(db.String(255))
     writer_id = db.Column(db.Integer,db.ForeignKey("writers.id"))
-    post = db.Column(db.Integer,db.ForeignKey("posts.id"))
+    post_id= db.Column(db.Integer,db.ForeignKey("posts.id"))
 
     def save_comment(self):
         db.session.add(self)
@@ -81,7 +81,7 @@ class Comment(db.Model):
         
     @classmethod
     def get_comments(cls,post):
-        comments = Comment.query.filter_by(post_id=post).all()
+        comments = Comment.query.filter_by(post_id=id).all()
         return comments
 
 class Quotes:

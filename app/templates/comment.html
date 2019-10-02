@@ -1,0 +1,14 @@
+{% extends 'base.html'%}
+{% import 'bootstrap/wtf.html' as wtf%}
+
+{% block content %}
+
+<div class="container">
+    <h3>COMMENTS</h3>
+    
+
+     {{wtf.quick_form(comment_form)}}
+     <!-- {{simplemde.load}} -->
+</div>
+
+{% endblock%}
