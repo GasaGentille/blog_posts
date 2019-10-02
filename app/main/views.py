@@ -30,7 +30,7 @@ def index():
        return redirect(url_for('.index'))
        mail_message("Welcome to blog posts","subscriber/subscriber_user",subscriber.email,subscriber = subscriber)
 
-   return render_template('index.html', title = title , posts=posts,quote=quote)
+   return render_template('index.html', title = title , posts=posts,quote=quote, subscription_form = form)
 
 
 
