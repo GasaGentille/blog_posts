@@ -3,7 +3,7 @@
           
             {% if current_user.is_authenticated %}
             
-            <h3 style="color:white;">{{current_user.username}}</h3>
+            <h3 style="color:white; col-md-6">You sign in as {{current_user.username}}</h3>
     
             <a class="nav-item nav-link" href="{{url_for('main.new_post')}}">Add post</a>
     
