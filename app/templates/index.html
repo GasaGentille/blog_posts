@@ -8,7 +8,7 @@
 
 {% endblock%}
 {% block content %}
-< >
+<h1> Person blog website!</h1>
 
 <div class="container">
     <h1><strong> Awesome quotes here!</strong></h1>
@@ -23,19 +23,19 @@
 <div class="container">
     {% for post in posts %}
     <p style="font-size:20px;">{{post.post_title}}:{{post.post_content}}</p>
-    <div class="col-md-2">
+    <div class="col-md-4">
         <a href="{{url_for('main.new_post')}}" class="btn btn-primary"> CREATE POST</a>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
 
         <a href="/post/{{post.id}}/update" class="btn btn-success"> UPDATE POST</a>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
         <a href="{{url_for('main.delete_post', post_id = post.id)}}" class=" btn btn-danger"> DELETE POST</button><br>
     </div>
 
     
-    <div class="col-md-3">
+    <div>
         <a href="{{url_for('main.comment',post_id = post.id)}}" class="btn btn-default"> Add comment to this blog</a>
         
         {% for comment in post.comments%}
@@ -50,7 +50,7 @@
 </div>
 
 
-<h3>Subscriber here!</h3>
+<h3>Subscribe here!</h3>
 <div>
     {{wtf.quick_form(form)}}
 </div>
