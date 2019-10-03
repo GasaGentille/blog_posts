@@ -8,6 +8,7 @@
 
 {% endblock%}
 {% block content %}
+< >
 
 <div class="container">
     <h1><strong> Awesome quotes here!</strong></h1>
@@ -21,7 +22,7 @@
 
 <div class="container">
     {% for post in posts %}
-    <p>{{post.post_content}}</p>
+    <p style="font-size:20px;">{{post.post_title}}:{{post.post_content}}</p>
     <div class="col-md-2">
         <a href="{{url_for('main.new_post')}}" class="btn btn-primary"> CREATE POST</a>
     </div>
@@ -30,13 +31,13 @@
         <a href="/post/{{post.id}}/update" class="btn btn-success"> UPDATE POST</a>
     </div>
     <div class="col-md-2">
-        <a href="{{url_for('main.delete_post', post_id = post.id)}}" class=" btn btn-danger"> DELETE POST</button>
+        <a href="{{url_for('main.delete_post', post_id = post.id)}}" class=" btn btn-danger"> DELETE POST</button><br>
     </div>
 
-    <!-- {{post.post_title}}:<p>{{post.post_content}}</p> -->
+    
     <div class="col-md-3">
         <a href="{{url_for('main.comment',post_id = post.id)}}" class="btn btn-default"> Add comment to this blog</a>
-        <!-- <div class="row "><span class="foot">{{post.comments.count()}}</span> -->
+        
         {% for comment in post.comments%}
         <p>{{comment.comment}}</p>
     </div>

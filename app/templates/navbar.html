@@ -3,16 +3,14 @@
           
             {% if current_user.is_authenticated %}
             
-            <h3 style="color:white; col-md-6">You sign in as {{current_user.username}}</h3>
+            <h3 style="color:white; text-align: center">You sign in as {{current_user.username}}</h3>
     
-            <a class="nav-item nav-link" href="{{url_for('main.new_post')}}">Add post</a>
+            <a class="nav-item nav-link" href="{{url_for('main.profile',uname=current_user.username)}}" class="btn btn-default">Profile</a>
     
-            <a class="nav-item nav-link" href="{{url_for('main.profile',uname=current_user.username)}}">Profile</a>
-    
-            <a class="nav-item nav-link" href="{{url_for('auth.logout')}}">Sign out</a>
+            <a class="nav-item nav-link" href="{{url_for('auth.logout')}} " class="btn btn-default">Sign out</a>
     
             {% else %}
-            <a class="nav-item nav-link" href="{{url_for('auth.login')}}">Sign in</a></li>
+            <a class="nav-item nav-link" href="{{url_for('auth.login')}}" class="btn btn-default">Sign in</a></li>
             {%endif%}
         </div>
     </div>
