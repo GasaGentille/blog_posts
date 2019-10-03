@@ -12,7 +12,10 @@ The Application will help Writer to:
 - Updating blog
 - Delete comments that I find insulting or degrading.
 
-
+The Application will help User to:
+- View the blog posts on the site
+- Comment on blog posts
+- An email alert when a new post is made by joining a subscription.
 
 You can visit the application using: 
 
