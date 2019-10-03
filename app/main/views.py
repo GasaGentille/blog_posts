@@ -8,7 +8,7 @@ import markdown2
 from ..request import get_quotes
 
 
-@main.route('/')
+@main.route('/' ,methods = ['GET','POST'])
 def index():
    '''
    View root page function that returns the index page and its data
@@ -30,7 +30,7 @@ def index():
        return redirect(url_for('.index'))
        mail_message("Welcome to blog posts","subscriber/subscriber_user",subscriber.email,subscriber = subscriber)
 
-   return render_template('index.html', title = title , posts=posts,quote=quote, subscription_form = form)
+   return render_template('index.html', title = title , posts=posts,quote=quote, form = form)
 
 
 
@@ -81,7 +81,7 @@ def new_post():
     post_form = PostForm()
     posts = Post.query.all()
     writer = Writer.query.filter_by(id=current_user.id).first()
-    # comments = Comment.query.filter_by(post_id = id).first()
+    comments = Comment.query.filter_by(post_id = id).first()
     print(post_form.validate_on_submit())
     
     if post_form.validate_on_submit():
@@ -95,7 +95,7 @@ def new_post():
         return redirect(url_for('.index'))
 
     title = 'New post'
-    return render_template('new_post.html', post_form = post_form, writer=writer)
+    return render_template('new_post.html', post_form = post_form, writer=writer, comments=comments)
 
 
 @main.route('/post/<int:post_id>', methods = ['GET','POST'])
@@ -114,7 +114,6 @@ def update_post(post_id):
 
     post_form = PostForm()
     if post_form.validate_on_submit():
-       
         Post.query.filter_by(id=post_id).update({"post_title": post_form.title.data, "post_content": post_form.content.data})
         db.session.add(post)
         db.session.commit()
