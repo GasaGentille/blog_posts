@@ -114,8 +114,7 @@ def update_post(post_id):
 
     post_form = PostForm()
     if post_form.validate_on_submit():
-        # post.post_title = post_form.title.data
-        # post.post_content = post_form.content.data 
+       
         Post.query.filter_by(id=post_id).update({"post_title": post_form.title.data, "post_content": post_form.content.data})
         db.session.add(post)
         db.session.commit()

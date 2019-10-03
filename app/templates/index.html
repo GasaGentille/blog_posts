@@ -15,8 +15,9 @@
 </div>
 
 
-{% for post in posts %}
+
 <div class="container">
+        {% for post in posts %}
     <div class="col-md-12">
         <a href="{{url_for('main.new_post')}}"> CREATE POST</a>
     </div>
@@ -40,11 +41,11 @@
         <a href="{{url_for('main.delete_comment',id = comment.id)}}">delete comment</i></a>
         {% endfor%}
     </div>
-
+    {% endfor %}
 
 </div>
 
-{% endfor %}
+
 <h3>Subscriber here!</h3>
 <div >
    {{wtf.quick_form(subscription_form)}} 
